@@ -1,0 +1,15 @@
+## .NET build output
+bin/
+obj/
+
+## IDE files
+.vs/
+.vscode/*.user
+*.user
+*.suo
+
+## Test results
+TestResults/
+
+## OS files
+.DS_Store
