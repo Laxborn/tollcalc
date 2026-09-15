@@ -26,32 +26,24 @@ namespace TollFeeCalculator
 
         // Only the actual named holidays. Kept separate from IsTollFreeDate so July and
         // weekends don't end up leaking into the day-before check above.
-        public static bool IsHoliday(DateTime date)
+        public static bool IsHoliday(DateTime date) => (date.Month, date.Day) switch
         {
-            int day = date.Day;
-            int month = date.Month;
-
-            if (month == 1 && day == 1) return true; // New Year's Day
-            if (month == 6 && day == 6) return true; // National Day
-            if (month == 12 && day == 24) return true; // Christmas Eve
-            if (month == 12 && day == 25) return true; // Christmas Day
-            if (month == 12 && day == 26) return true; // Boxing Day
-            if (month == 12 && day == 31) return true; // New Year's Eve
-
-            return IsMoveableHoliday(date);
-        }
+            (1, 1) => true, // New Year's Day
+            (6, 6) => true, // National Day
+            (12, 24) => true, // Christmas Eve
+            (12, 25) => true, // Christmas Day
+            (12, 26) => true, // Boxing Day
+            (12, 31) => true, // New Year's Eve
+            _ => IsMoveableHoliday(date)
+        };
 
         // Easter-based holidays - these move every year so we calculate off Easter Sunday.
         private static bool IsMoveableHoliday(DateTime date)
         {
             DateTime easter = CalculateEasterSunday(date.Year);
+            int[] daysFromEaster = [-2, 1, 39, 50]; // Good Friday, Easter Monday, Ascension Day, Whit Monday
 
-            if (date.Date == easter.Date.AddDays(-2)) return true; // Good Friday
-            if (date.Date == easter.Date.AddDays(1)) return true; // Easter Monday
-            if (date.Date == easter.Date.AddDays(39)) return true; // Ascension Day
-            if (date.Date == easter.Date.AddDays(50)) return true; // Whit Monday
-
-            return false;
+            return daysFromEaster.Any(offset => date.Date == easter.Date.AddDays(offset));
         }
 
         // Gauss's Easter algorithm (aka the "Computus"). Looks cryptic but it's the
