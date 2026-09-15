@@ -2,7 +2,8 @@ using System;
 
 namespace TollFeeCalculator
 {
-    // Handles weekends and holidays (fixed dates + Easter-based moveable ones).
+    // Handles weekends, holidays, day-before-holiday and the July exemption.
+    // Personally I'd prefer to use a library for this, but I don't want to assume that's ok, so I made a helper class.
     public static class HolidayProvider
     {
         public static bool IsTollFreeDate(DateTime date)
@@ -11,25 +12,38 @@ namespace TollFeeCalculator
             if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
                 return true;
 
-            int day = date.Day;
-            int month = date.Month;
+            // whole of July is free per the requirements
+            if (date.Month == 7)
+                return true;
 
-            // fixed holidays
-            if (month == 1 && day == 1) return true; // New Year's Day
-            if (month == 6 && day == 6) return true; // National Day
-            if (month == 7) return true; // whole of July is free
-            if (month == 12 && day == 24) return true; // Christmas Eve
-            if (month == 12 && day == 25) return true; // Christmas Day
-            if (month == 12 && day == 26) return true; // Boxing Day
-            if (month == 12 && day == 31) return true; // New Year's Eve
+            if (IsHoliday(date))
+                return true;
 
-            // Easter-based holidays move every year, so calculate off Easter Sunday
-            if (IsMoveableHoliday(date))
+            // day before a holiday is also free - just checking tomorrow here
+            if (IsHoliday(date.AddDays(1)))
                 return true;
 
             return false;
         }
 
+        // Only the actual named holidays. Kept separate from IsTollFreeDate so July and
+        // weekends don't end up leaking into the day-before check above.
+        public static bool IsHoliday(DateTime date)
+        {
+            int day = date.Day;
+            int month = date.Month;
+
+            if (month == 1 && day == 1) return true; // New Year's Day
+            if (month == 6 && day == 6) return true; // National Day
+            if (month == 12 && day == 24) return true; // Christmas Eve
+            if (month == 12 && day == 25) return true; // Christmas Day
+            if (month == 12 && day == 26) return true; // Boxing Day
+            if (month == 12 && day == 31) return true; // New Year's Eve
+
+            return IsMoveableHoliday(date);
+        }
+
+        // Easter-based holidays - these move every year so we calculate off Easter Sunday.
         private static bool IsMoveableHoliday(DateTime date)
         {
             DateTime easter = CalculateEasterSunday(date.Year);

@@ -119,6 +119,20 @@ public class TollCalculatorTests
         Assert.Equal(0, fee);
     }
 
+    [Theory]
+    [InlineData(2026, 6, 5)] // Friday before National Day (June 6)
+    [InlineData(2026, 12, 23)] // Wednesday before Christmas Eve
+    [InlineData(2026, 12, 30)] // Wednesday before New Year's Eve
+    [InlineData(2026, 5, 13)] // Wednesday before Ascension Day
+    public void The_day_before_a_holiday_is_free(int year, int month, int day)
+    {
+        var date = new DateTime(year, month, day, 7, 0, 0);
+
+        var fee = calculator.GetTollFee(date, car);
+
+        Assert.Equal(0, fee);
+    }
+
     [Fact]
     public void A_motorbike_is_exempt()
     {
