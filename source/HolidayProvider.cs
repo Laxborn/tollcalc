@@ -1,5 +1,3 @@
-using System;
-
 namespace TollFeeCalculator
 {
     // Handles weekends, holidays, day-before-holiday and the July exemption.
