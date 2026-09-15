@@ -11,6 +11,7 @@
     <Compile Include="../source/Car.cs" Link="Car.cs" />
     <Compile Include="../source/Motorbike.cs" Link="Motorbike.cs" />
     <Compile Include="../source/TollCalculator.cs" Link="TollCalculator.cs" />
+    <Compile Include="../source/HolidayProvider.cs" Link="HolidayProvider.cs" />
   </ItemGroup>
 
 </Project>
