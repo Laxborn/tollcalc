@@ -1,7 +1,16 @@
 namespace TollFeeCalculator
 {
-    public class TollCalculator
+    public class TollCalculator : ITollCalculator
     {
+        private readonly IHolidayProvider holidayProvider;
+
+        public TollCalculator() : this(new HolidayProvider()) { }
+
+        public TollCalculator(IHolidayProvider holidayProvider)
+        {
+            this.holidayProvider = holidayProvider;
+        }
+
         /**
          * Calculate the total toll fee for one day
          *
@@ -50,7 +59,7 @@ namespace TollFeeCalculator
 
         public int GetTollFee(DateTime date, Vehicle vehicle)
         {
-            if (HolidayProvider.IsTollFreeDate(date) || IsTollFreeVehicle(vehicle)) return 0;
+            if (holidayProvider.IsTollFreeDate(date) || IsTollFreeVehicle(vehicle)) return 0;
 
             return TollConfiguration.GetFeeByTime(date.Hour, date.Minute);
         }

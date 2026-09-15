@@ -189,6 +189,33 @@ public class TollCalculatorTests
         Assert.Equal(60, fee);
     }
 
+    // A fake that always says "not toll-free" - used to isolate the interval/daily-cap
+    // logic in GetTollFee from the real holiday rules, so a test can't accidentally
+    // pass or fail because a chosen date happens to be a holiday.
+    private class AlwaysChargeableHolidayProvider : IHolidayProvider
+    {
+        public bool IsTollFreeDate(DateTime date) => false;
+    }
+
+    [Fact]
+    public void The_daily_fee_is_never_more_than_sixty_regardless_of_holidays()
+    {
+        var calculator = new TollCalculator(new AlwaysChargeableHolidayProvider());
+        var dates = new[]
+        {
+            new DateTime(2026, 9, 14, 6, 0, 0),
+            new DateTime(2026, 9, 14, 7, 1, 0),
+            new DateTime(2026, 9, 14, 8, 2, 0),
+            new DateTime(2026, 9, 14, 9, 3, 0),
+            new DateTime(2026, 9, 14, 10, 4, 0),
+            new DateTime(2026, 9, 14, 11, 5, 0)
+        };
+
+        var fee = calculator.GetTollFee(car, dates);
+
+        Assert.Equal(60, fee);
+    }
+
     [Fact]
     public void A_null_date_array_throws_an_exception()
     {

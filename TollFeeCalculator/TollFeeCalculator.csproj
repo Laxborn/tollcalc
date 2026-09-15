@@ -10,7 +10,9 @@
     <Compile Include="../source/Vehicle.cs" Link="Vehicle.cs" />
     <Compile Include="../source/Car.cs" Link="Car.cs" />
     <Compile Include="../source/Motorbike.cs" Link="Motorbike.cs" />
+    <Compile Include="../source/ITollCalculator.cs" Link="ITollCalculator.cs" />
     <Compile Include="../source/TollCalculator.cs" Link="TollCalculator.cs" />
+    <Compile Include="../source/IHolidayProvider.cs" Link="IHolidayProvider.cs" />
     <Compile Include="../source/HolidayProvider.cs" Link="HolidayProvider.cs" />
     <Compile Include="../source/TollConfiguration.cs" Link="TollConfiguration.cs" />
   </ItemGroup>

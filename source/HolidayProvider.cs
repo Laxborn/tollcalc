@@ -2,9 +2,9 @@ namespace TollFeeCalculator
 {
     // Handles weekends, holidays, day-before-holiday and the July exemption.
     // Personally I'd prefer to use a library for this, but I don't want to assume that's ok, so I made a helper class.
-    public static class HolidayProvider
+    public class HolidayProvider : IHolidayProvider
     {
-        public static bool IsTollFreeDate(DateTime date)
+        public bool IsTollFreeDate(DateTime date)
         {
             // weekends are always free
             if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
@@ -26,7 +26,7 @@ namespace TollFeeCalculator
 
         // Only the actual named holidays. Kept separate from IsTollFreeDate so July and
         // weekends don't end up leaking into the day-before check above.
-        public static bool IsHoliday(DateTime date) => (date.Month, date.Day) switch
+        public bool IsHoliday(DateTime date) => (date.Month, date.Day) switch
         {
             (1, 1) => true, // New Year's Day
             (6, 6) => true, // National Day
