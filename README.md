@@ -45,6 +45,8 @@ dotnet test
 
 ## Hur vi hamnade här
 
+Arbetet kördes med en TDD-approach (test-driven development): testerna skrevs först, mot kraven i `Krav.txt`, så att det tydligt syntes svart på vitt vad i den befintliga koden som faktiskt var fel, en handfull röda tester som facit innan någon fix gjordes. Därefter implementerades fixarna tills de blev gröna, och varje efterföljande refaktorering gjordes med hela testsviten som skyddsnät.
+
 Startpunkten var den befintliga `TollCalculator.cs`, som hade ett par riktiga buggar gömda i sig: 60-minutersfönstret jämförde millisekund-komponenten istället för faktisk förfluten tid, mitt-på-dagen-avgiften krävde minut ≥30 för varje timme mellan 9 och 14 (den skulle bara gällt timme 8), och juli var bara skattefritt ett hårdkodat år. De fixades först, tillsammans med "dagen före helgdag"-regeln som ett tidigare försök på samma övning missade helt.
 
 Därifrån blev det mer av ett allmänt städ-pass: bröt ut helgdags-/datumlogiken och avgiftsschemat till egna klasser, bytte en lång if-kedja mot switch-expressions, tog bort ett dött fordons-enum (Tractor/Emergency/Diplomat/...) som varken kravlistan efterfrågade eller någon klass implementerade, och införde `ITollCalculator`/`IHolidayProvider` så att beräknarens beroenden går att byta ut - i första hand för tester idag, kanske för andra städers regler längre fram.
