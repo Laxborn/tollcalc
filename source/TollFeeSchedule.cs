@@ -1,7 +1,7 @@
 namespace TollFeeCalculator
 {
     // Fee schedule and the constants used when calculating a day's total toll.
-    public static class TollConfiguration
+    public static class TollFeeSchedule
     {
         public const int MaxDailyFee = 60;
         public const int SameHourWindowMinutes = 60;

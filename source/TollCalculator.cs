@@ -39,7 +39,7 @@ namespace TollFeeCalculator
                 long minutes = diffInTicks / TimeSpan.TicksPerMinute;
 
                 // outside the window - charge what we had and start a new one from here
-                if (minutes > TollConfiguration.SameHourWindowMinutes)
+                if (minutes > TollFeeSchedule.SameHourWindowMinutes)
                 {
                     totalFee += windowHighestFee;
                     windowStart = date;
@@ -50,7 +50,7 @@ namespace TollFeeCalculator
             }
             totalFee += windowHighestFee;
 
-            return Math.Min(totalFee, TollConfiguration.MaxDailyFee);
+            return Math.Min(totalFee, TollFeeSchedule.MaxDailyFee);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace TollFeeCalculator
             ArgumentNullException.ThrowIfNull(vehicle);
             if (holidayProvider.IsTollFreeDate(date) || vehicle.IsTollFree) return 0;
 
-            return TollConfiguration.GetFeeByTime(date.Hour, date.Minute);
+            return TollFeeSchedule.GetFeeByTime(date.Hour, date.Minute);
         }
     }
 }

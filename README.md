@@ -29,7 +29,7 @@ source/
 ├── TollCalculator.cs      själva räknelogiken - intervallfönster + dagstak
 ├── IHolidayProvider.cs    kontraktet för "är detta datum skattefritt"
 ├── HolidayProvider.cs     helger, helgdagar, dagen-före-helgdag, juli
-└── TollConfiguration.cs   konstanter + avgiftsschemat per timme
+└── TollFeeSchedule.cs     konstanter + avgiftsschemat per timme
 
 TollFeeCalculator/         class library-projektet (länkar in filerna ovan)
 tests/                     xUnit-testprojekt
