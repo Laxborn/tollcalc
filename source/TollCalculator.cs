@@ -24,30 +24,27 @@ namespace TollFeeCalculator
             if (dates == null || dates.Length == 0)
                 throw new ArgumentException("Dates cannot be null or empty", nameof(dates));
 
-            DateTime intervalStart = dates[0];
+            DateTime windowStart = dates[0];
+            int windowHighestFee = 0;
             int totalFee = 0;
             foreach (DateTime date in dates)
             {
-                int nextFee = GetTollFee(date, vehicle);
-                int tempFee = GetTollFee(intervalStart, vehicle);
-
-                long diffInTicks = date.Ticks - intervalStart.Ticks;
+                long diffInTicks = date.Ticks - windowStart.Ticks;
                 long minutes = diffInTicks / TimeSpan.TicksPerMinute;
 
-                if (minutes <= TollConfiguration.SameHourWindowMinutes)
+                // outside the window - charge what we had and start a new one from here
+                if (minutes > TollConfiguration.SameHourWindowMinutes)
                 {
-                    if (totalFee > 0) totalFee -= tempFee;
-                    if (nextFee >= tempFee) tempFee = nextFee;
-                    totalFee += tempFee;
+                    totalFee += windowHighestFee;
+                    windowStart = date;
+                    windowHighestFee = 0;
                 }
-                else
-                {
-                    totalFee += nextFee;
-                    intervalStart = date;
-                }
+
+                windowHighestFee = Math.Max(windowHighestFee, GetTollFee(date, vehicle));
             }
-            if (totalFee > TollConfiguration.MaxDailyFee) totalFee = TollConfiguration.MaxDailyFee;
-            return totalFee;
+            totalFee += windowHighestFee;
+
+            return Math.Min(totalFee, TollConfiguration.MaxDailyFee);
         }
 
         public int GetTollFee(DateTime date, IVehicle vehicle)

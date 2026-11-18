@@ -158,6 +158,36 @@ public class TollCalculatorTests
     }
 
     [Fact]
+    public void Only_the_highest_fee_is_charged_for_three_rising_passages_within_one_hour()
+    {
+        var dates = new[]
+        {
+            new DateTime(2026, 9, 14, 6, 20, 0), // 8
+            new DateTime(2026, 9, 14, 6, 40, 0), // 13
+            new DateTime(2026, 9, 14, 7, 10, 0)  // 18
+        };
+
+        var fee = calculator.GetTollFee(car, dates);
+
+        Assert.Equal(18, fee);
+    }
+
+    [Fact]
+    public void Only_the_highest_fee_is_charged_when_it_is_not_the_last_passage_within_one_hour()
+    {
+        var dates = new[]
+        {
+            new DateTime(2026, 9, 14, 6, 20, 0), // 8
+            new DateTime(2026, 9, 14, 7, 10, 0), // 18
+            new DateTime(2026, 9, 14, 7, 15, 0)  // 18
+        };
+
+        var fee = calculator.GetTollFee(car, dates);
+
+        Assert.Equal(18, fee);
+    }
+
+    [Fact]
     public void Passages_more_than_one_hour_apart_are_charged_separately()
     {
         var dates = new[]
