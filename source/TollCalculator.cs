@@ -50,16 +50,9 @@ namespace TollFeeCalculator
             return totalFee;
         }
 
-        private bool IsTollFreeVehicle(Vehicle vehicle)
-        {
-            if (vehicle == null) return false;
-            String vehicleType = vehicle.GetVehicleType();
-            return vehicleType.Equals("Motorbike", StringComparison.OrdinalIgnoreCase);
-        }
-
         public int GetTollFee(DateTime date, Vehicle vehicle)
         {
-            if (holidayProvider.IsTollFreeDate(date) || IsTollFreeVehicle(vehicle)) return 0;
+            if (holidayProvider.IsTollFreeDate(date) || (vehicle?.IsTollFree ?? false)) return 0;
 
             return TollConfiguration.GetFeeByTime(date.Hour, date.Minute);
         }
