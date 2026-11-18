@@ -302,6 +302,24 @@ public class TollCalculatorTests
         Assert.Throws<ArgumentException>(() => calculator.GetTollFee(car, Array.Empty<DateTime>()));
     }
 
+    // no vehicle is a bug on the caller's side - should throw instead of quietly charging a fee
+    [Fact]
+    public void A_null_vehicle_throws_an_exception()
+    {
+        var date = new DateTime(2026, 9, 14, 7, 0, 0);
+
+        Assert.Throws<ArgumentNullException>(() => calculator.GetTollFee(date, null!));
+    }
+
+    // same but through the overload that takes a whole day of passages
+    [Fact]
+    public void A_null_vehicle_throws_an_exception_for_a_full_day()
+    {
+        var dates = new[] { new DateTime(2026, 9, 14, 7, 0, 0) };
+
+        Assert.Throws<ArgumentNullException>(() => calculator.GetTollFee(null!, dates));
+    }
+
     // passages given out of order should cost the same as in order - 06:00 + 06:30 is one
     // window (13) and 08:00 another (13), so 26. unsorted the old code gave 21
     [Fact]

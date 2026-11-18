@@ -21,6 +21,7 @@ namespace TollFeeCalculator
 
         public int GetTollFee(IVehicle vehicle, DateTime[] dates)
         {
+            ArgumentNullException.ThrowIfNull(vehicle);
             if (dates == null || dates.Length == 0)
                 throw new ArgumentException("Dates cannot be null or empty", nameof(dates));
 
@@ -56,7 +57,8 @@ namespace TollFeeCalculator
 
         public int GetTollFee(DateTime date, IVehicle vehicle)
         {
-            if (holidayProvider.IsTollFreeDate(date) || (vehicle?.IsTollFree ?? false)) return 0;
+            ArgumentNullException.ThrowIfNull(vehicle);
+            if (holidayProvider.IsTollFreeDate(date) || vehicle.IsTollFree) return 0;
 
             return TollConfiguration.GetFeeByTime(date.Hour, date.Minute);
         }
