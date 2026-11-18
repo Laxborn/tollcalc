@@ -97,6 +97,8 @@ public class TollCalculatorTests
     [InlineData(2026, 1, 1)]
     [InlineData(2027, 1, 1)]
     [InlineData(2029, 1, 1)]
+    [InlineData(2026, 1, 6)] // Epiphany
+    [InlineData(2026, 5, 1)] // May Day
     [InlineData(2026, 6, 6)]
     [InlineData(2026, 12, 24)]
     [InlineData(2026, 12, 25)]
@@ -118,7 +120,6 @@ public class TollCalculatorTests
     [InlineData(2026, 4, 3)] // Good Friday (Easter Sunday is April 5, 2026)
     [InlineData(2026, 4, 6)] // Easter Monday
     [InlineData(2026, 5, 14)] // Ascension Day
-    [InlineData(2026, 5, 25)] // Whit Monday
     public void A_moveable_holiday_based_on_easter_is_free(int year, int month, int day)
     {
         var date = new DateTime(year, month, day, 7, 0, 0);
@@ -134,6 +135,14 @@ public class TollCalculatorTests
     [InlineData(2026, 12, 23)] // Wednesday before Christmas Eve
     [InlineData(2026, 12, 30)] // Wednesday before New Year's Eve
     [InlineData(2026, 5, 13)] // Wednesday before Ascension Day
+    [InlineData(2026, 1, 5)] // Monday before Epiphany
+    [InlineData(2026, 4, 30)] // Thursday before May Day
+    [InlineData(2025, 6, 20)] // Midsummer Eve
+    [InlineData(2026, 6, 19)] // Midsummer Eve
+    [InlineData(2027, 6, 25)] // Midsummer Eve
+    [InlineData(2025, 10, 31)] // Friday before All Saints' Day
+    [InlineData(2026, 10, 30)] // Friday before All Saints' Day
+    [InlineData(2027, 11, 5)] // Friday before All Saints' Day
     public void The_day_before_a_holiday_is_free(int year, int month, int day)
     {
         var date = new DateTime(year, month, day, 7, 0, 0);
@@ -141,6 +150,22 @@ public class TollCalculatorTests
         var fee = calculator.GetTollFee(date, car);
 
         Assert.Equal(0, fee);
+    }
+
+    // normal weekdays that could easily get mixed up with a holiday - should be charged as usual.
+    // whit monday hasn't been a swedish holiday since 2005, and the friday after midsummer
+    // makes sure we don't pick the wrong saturday
+    [Theory]
+    [InlineData(2025, 6, 9)] // Whit Monday
+    [InlineData(2026, 5, 25)] // Whit Monday
+    [InlineData(2026, 6, 26)] // Friday after Midsummer
+    public void A_regular_weekday_close_to_a_holiday_is_charged(int year, int month, int day)
+    {
+        var date = new DateTime(year, month, day, 7, 0, 0);
+
+        var fee = calculator.GetTollFee(date, car);
+
+        Assert.Equal(18, fee);
     }
 
     // motorbike at rush hour on a normal weekday - should pay nothing

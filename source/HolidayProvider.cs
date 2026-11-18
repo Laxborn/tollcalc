@@ -29,6 +29,8 @@ namespace TollFeeCalculator
         public bool IsHoliday(DateTime date) => (date.Month, date.Day) switch
         {
             (1, 1) => true, // New Year's Day
+            (1, 6) => true, // Epiphany
+            (5, 1) => true, // May Day
             (6, 6) => true, // National Day
             (12, 24) => true, // Christmas Eve
             (12, 25) => true, // Christmas Day
@@ -37,13 +39,27 @@ namespace TollFeeCalculator
             _ => IsMoveableHoliday(date)
         };
 
-        // Easter-based holidays - these move every year so we calculate off Easter Sunday.
+        // Holidays that move around every year - either based on easter, or a saturday within a set range.
         private static bool IsMoveableHoliday(DateTime date)
         {
             DateTime easter = CalculateEasterSunday(date.Year);
-            int[] daysFromEaster = [-2, 1, 39, 50]; // Good Friday, Easter Monday, Ascension Day, Whit Monday
+            int[] daysFromEaster = [-2, 1, 39]; // Good Friday, Easter Monday, Ascension Day
+            // no whit monday here - it got swapped for national day back in 2005
 
-            return daysFromEaster.Any(offset => date.Date == easter.Date.AddDays(offset));
+            if (daysFromEaster.Any(offset => date.Date == easter.Date.AddDays(offset)))
+                return true;
+
+            DateTime midsummerDay = FirstSaturdayFrom(new DateTime(date.Year, 6, 20)); // sat 20-26 june
+            DateTime allSaintsDay = FirstSaturdayFrom(new DateTime(date.Year, 10, 31)); // sat 31 oct - 6 nov
+
+            return date.Date == midsummerDay || date.Date == allSaintsDay;
+        }
+
+        // first saturday on or after the given date - e.g. if the start is already a saturday we just return it
+        private static DateTime FirstSaturdayFrom(DateTime start)
+        {
+            int daysUntilSaturday = ((int)DayOfWeek.Saturday - (int)start.DayOfWeek + 7) % 7;
+            return start.AddDays(daysUntilSaturday);
         }
 
         // Gauss's Easter algorithm (aka the "Computus"). Looks cryptic but it's the
