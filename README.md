@@ -17,6 +17,8 @@ Utgångskoden hade inga direkta syntaxfel, men gott om utrymme för förbättrin
 - Flera passager inom 60 minuter räknas bara en gång, till den högsta avgiften bland dem
 - Max 60 kr per dag och fordon
 
+`GetTollFee(vehicle, dates)` utgår från att alla passager är från samma dag, eftersom dagstaket bara funkar per dag. Blandar man dagar kastas ett exception istället för att räkna fel i tysthet. Behövs stöd för flera dagar längre fram är det enkelt att lägga till - gruppera per dag och summera - men vi kör på en dag tills vidare.
+
 ## Struktur
 
 ```

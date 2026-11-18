@@ -301,4 +301,34 @@ public class TollCalculatorTests
     {
         Assert.Throws<ArgumentException>(() => calculator.GetTollFee(car, Array.Empty<DateTime>()));
     }
+
+    // passages given out of order should cost the same as in order - 06:00 + 06:30 is one
+    // window (13) and 08:00 another (13), so 26. unsorted the old code gave 21
+    [Fact]
+    public void Passages_in_the_wrong_order_are_charged_the_same_as_in_order()
+    {
+        var dates = new[]
+        {
+            new DateTime(2026, 9, 14, 6, 0, 0), // 8
+            new DateTime(2026, 9, 14, 8, 0, 0), // 13
+            new DateTime(2026, 9, 14, 6, 30, 0) // 13
+        };
+
+        var fee = calculator.GetTollFee(car, dates);
+
+        Assert.Equal(26, fee);
+    }
+
+    // the daily cap only makes sense for one day, so mixing days should blow up
+    [Fact]
+    public void Passages_from_different_days_throw_an_exception()
+    {
+        var dates = new[]
+        {
+            new DateTime(2026, 9, 14, 7, 0, 0),
+            new DateTime(2026, 9, 15, 7, 0, 0)
+        };
+
+        Assert.Throws<ArgumentException>(() => calculator.GetTollFee(car, dates));
+    }
 }

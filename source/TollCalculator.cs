@@ -24,10 +24,17 @@ namespace TollFeeCalculator
             if (dates == null || dates.Length == 0)
                 throw new ArgumentException("Dates cannot be null or empty", nameof(dates));
 
-            DateTime windowStart = dates[0];
+            // order of the passages shouldn't matter, so just sort them first
+            DateTime[] passages = dates.OrderBy(d => d).ToArray();
+
+            // the daily cap only works if everything is on the same day
+            if (passages[0].Date != passages.Last().Date)
+                throw new ArgumentException("All passages must be on the same day", nameof(dates));
+
+            DateTime windowStart = passages[0];
             int windowHighestFee = 0;
             int totalFee = 0;
-            foreach (DateTime date in dates)
+            foreach (DateTime date in passages)
             {
                 long diffInTicks = date.Ticks - windowStart.Ticks;
                 long minutes = diffInTicks / TimeSpan.TicksPerMinute;
