@@ -11,14 +11,12 @@ namespace TollFeeCalculator
             this.holidayProvider = holidayProvider;
         }
 
-        /**
-         * Calculate the total toll fee for one day
-         *
-         * @param vehicle - the vehicle
-         * @param dates   - date and time of all passes on one day
-         * @return - the total toll fee for that day
-         */
-
+        /// <summary>
+        /// Calculates the total toll fee for one day of passages.
+        /// </summary>
+        /// <param name="vehicle">The vehicle that passed.</param>
+        /// <param name="dates">Date and time of every passage, all on the same day. Order doesn't matter.</param>
+        /// <returns>The total fee for that day, capped at the daily max.</returns>
         public int GetTollFee(IVehicle vehicle, DateTime[] dates)
         {
             ArgumentNullException.ThrowIfNull(vehicle);
@@ -48,14 +46,20 @@ namespace TollFeeCalculator
                     windowHighestFee = 0;
                 }
 
-                windowHighestFee = Math.Max(windowHighestFee, GetTollFee(date, vehicle));
+                windowHighestFee = Math.Max(windowHighestFee, GetTollFee(vehicle, date));
             }
             totalFee += windowHighestFee;
 
             return Math.Min(totalFee, TollConfiguration.MaxDailyFee);
         }
 
-        public int GetTollFee(DateTime date, IVehicle vehicle)
+        /// <summary>
+        /// Calculates the toll fee for a single passage.
+        /// </summary>
+        /// <param name="vehicle">The vehicle that passed.</param>
+        /// <param name="date">Date and time of the passage.</param>
+        /// <returns>The fee for that passage, or 0 if the day or vehicle is toll-free.</returns>
+        public int GetTollFee(IVehicle vehicle, DateTime date)
         {
             ArgumentNullException.ThrowIfNull(vehicle);
             if (holidayProvider.IsTollFreeDate(date) || vehicle.IsTollFree) return 0;

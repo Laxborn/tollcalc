@@ -37,7 +37,7 @@ public class TollCalculatorTests
     {
         var date = new DateTime(2026, 9, 14, hour, minute, 0);
 
-        var fee = calculator.GetTollFee(date, car);
+        var fee = calculator.GetTollFee(car, date);
 
         Assert.Equal(expectedFee, fee);
     }
@@ -48,7 +48,7 @@ public class TollCalculatorTests
     {
         var saturday = new DateTime(2026, 9, 19, 7, 0, 0);
 
-        var fee = calculator.GetTollFee(saturday, car);
+        var fee = calculator.GetTollFee(car, saturday);
 
         Assert.Equal(0, fee);
     }
@@ -59,7 +59,7 @@ public class TollCalculatorTests
     {
         var sunday = new DateTime(2026, 9, 20, 7, 0, 0);
 
-        var fee = calculator.GetTollFee(sunday, car);
+        var fee = calculator.GetTollFee(car, sunday);
 
         Assert.Equal(0, fee);
     }
@@ -70,7 +70,7 @@ public class TollCalculatorTests
     {
         var date = new DateTime(2026, 7, 14, 7, 0, 0);
 
-        var fee = calculator.GetTollFee(date, car);
+        var fee = calculator.GetTollFee(car, date);
 
         Assert.Equal(0, fee);
     }
@@ -85,7 +85,7 @@ public class TollCalculatorTests
     {
         var date = new DateTime(year, month, day, 7, 0, 0);
 
-        var fee = calculator.GetTollFee(date, car);
+        var fee = calculator.GetTollFee(car, date);
 
         Assert.Equal(0, fee);
     }
@@ -108,7 +108,7 @@ public class TollCalculatorTests
     {
         var date = new DateTime(year, month, day, 7, 0, 0);
 
-        var fee = calculator.GetTollFee(date, car);
+        var fee = calculator.GetTollFee(car, date);
 
         Assert.Equal(0, fee);
     }
@@ -124,7 +124,7 @@ public class TollCalculatorTests
     {
         var date = new DateTime(year, month, day, 7, 0, 0);
 
-        var fee = calculator.GetTollFee(date, car);
+        var fee = calculator.GetTollFee(car, date);
 
         Assert.Equal(0, fee);
     }
@@ -147,7 +147,7 @@ public class TollCalculatorTests
     {
         var date = new DateTime(year, month, day, 7, 0, 0);
 
-        var fee = calculator.GetTollFee(date, car);
+        var fee = calculator.GetTollFee(car, date);
 
         Assert.Equal(0, fee);
     }
@@ -163,7 +163,7 @@ public class TollCalculatorTests
     {
         var date = new DateTime(year, month, day, 7, 0, 0);
 
-        var fee = calculator.GetTollFee(date, car);
+        var fee = calculator.GetTollFee(car, date);
 
         Assert.Equal(18, fee);
     }
@@ -174,7 +174,7 @@ public class TollCalculatorTests
     {
         var date = new DateTime(2026, 9, 14, 7, 0, 0);
 
-        var fee = calculator.GetTollFee(date, new Motorbike());
+        var fee = calculator.GetTollFee(new Motorbike(), date);
 
         Assert.Equal(0, fee);
     }
@@ -308,7 +308,7 @@ public class TollCalculatorTests
     {
         var date = new DateTime(2026, 9, 14, 7, 0, 0);
 
-        Assert.Throws<ArgumentNullException>(() => calculator.GetTollFee(date, null!));
+        Assert.Throws<ArgumentNullException>(() => calculator.GetTollFee(null!, date));
     }
 
     // same but through the overload that takes a whole day of passages
