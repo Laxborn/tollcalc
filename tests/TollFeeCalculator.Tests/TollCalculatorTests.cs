@@ -44,7 +44,7 @@ public class TollCalculatorTests
 
     // saturday at rush hour should still be free
     [Fact]
-    public void A_weekend_passage_is_free()
+    public void A_saturday_passage_is_free()
     {
         var saturday = new DateTime(2026, 9, 19, 7, 0, 0);
 
