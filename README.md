@@ -21,7 +21,7 @@ Utgångskoden hade inga direkta syntaxfel, men gott om utrymme för förbättrin
 
 ```
 source/
-├── Vehicle.cs             interface för allt som kan tullas
+├── IVehicle.cs            interface för allt som kan tullas
 ├── Car.cs / Motorbike.cs  de två fordonstyper vi har idag
 ├── ITollCalculator.cs     kontraktet för att räkna ut en avgift
 ├── TollCalculator.cs      själva räknelogiken - intervallfönster + dagstak
